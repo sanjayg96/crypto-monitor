@@ -6,6 +6,7 @@ import streamlit as st
 from utils.custom_functions import (
     file_download,
     get_data,
+    get_insights,
     percentage_change_plot,
     price_plot,
 )
@@ -13,6 +14,7 @@ from utils.custom_functions import (
 with open("utils/config_constants.json", "r") as file_handle:
     config_dict = json.load(file_handle)
 
+# Set wide page layout
 st.set_page_config(layout="wide")
 
 # Title
@@ -24,62 +26,57 @@ st.markdown(
 """
 )
 
-st.markdown("### Quick insights")
-expander = st.expander("View")
-expander.markdown(
-    """
-WIP
-
-"""
-)
-
-
-# Divide the page into 3 columns
-# col1 would be the sidebar for data controls accepting user inputs
-# col2 and col3 would contain the main contents
-col1 = st.sidebar
-# col2, col3 = st.columns((2, 1))
-
+# Web scrape crypto data
 df = get_data()
 df = df[config_dict["select_columns"]]
 df.columns = config_dict["new_col_names"]
 df = df.sort_values(by="Price", ascending=False, ignore_index=True)
 
-col1.header("Data Controls")
-
-## Sidebar - Cryptocurrency selections
-# sorted_coin = sorted(df["Symbol"])
-# selected_coin = col1.multiselect("Cryptocurrency", sorted_coin, sorted_coin)
-
-# df_selected_coin = df[(df["Symbol"].isin(selected_coin))]  # Filtering data
+##################################################
+# Sidebar
+##################################################
+side_bar = st.sidebar
+side_bar.header("Data Controls")
 
 ## Sidebar - Number of coins to display
-num_coin = col1.slider("Display Top N Coins", 1, 100, 20)
+num_coin = side_bar.slider("Display Top N Coins", 1, 100, 20)
 df_coins = df[:num_coin]
 download_data = file_download(df_coins)
 
 ## Sidebar - Percent change timeframe
-percent_timeframe = col1.selectbox(
+percent_timeframe = side_bar.selectbox(
     "Percent change time frame", ["1h", "24h", "7d", "30d", "60d", "90d"]
 )
+##################################################
 
-## Sidebar - Sorting values
-# sort_values = col1.selectbox("Sort values?", ["Yes", "No"])
+most_traded, highest_ytd, steady_growth = get_insights(df)
 
-# ---------------------------------#
-# Preparing data for Bar plot of % Price change
-df_change = pd.concat(
+##################################################
+# Insights section
+##################################################
+st.markdown("### Quick insights")
+expander = st.expander("View")
+expander.write("##### **Five most traded by volume in the past 24 hours**")
+expander.write(most_traded)
+expander.write("##### **Five highest Year-to-Date (YTD) growth**")
+expander.write(highest_ytd)
+expander.write("##### **Steady positive growth over the past week**")
+expander.write(steady_growth)
+##################################################
+
+df_change = df_coins[
     [
-        df_coins.Cryptocurrency,
-        df_coins.PercentChange1h,
-        df_coins.PercentChange24h,
-        df_coins.PercentChange7d,
-        df_coins.PercentChange30d,
-        df_coins.PercentChange60d,
-        df_coins.PercentChange90d,
-    ],
-    axis=1,
-)
+        "Cryptocurrency",
+        "PercentChange1h",
+        "PercentChange24h",
+        "PercentChange7d",
+        "PercentChange30d",
+        "PercentChange60d",
+        "PercentChange90d",
+    ]
+]
+
+
 df_change = df_change.set_index("Cryptocurrency")
 df_change["positive_PercentChange1h"] = df_change["PercentChange1h"] > 0
 df_change["positive_PercentChange24h"] = df_change["PercentChange24h"] > 0
@@ -88,14 +85,25 @@ df_change["positive_PercentChange30d"] = df_change["PercentChange30d"] > 0
 df_change["positive_PercentChange60d"] = df_change["PercentChange60d"] > 0
 df_change["positive_PercentChange90d"] = df_change["PercentChange90d"] > 0
 
+
+##################################################
+# Percent price change plot
+##################################################
 st.subheader("Percentage Price Change of Cryptocurrencies")
 percentage_change_plot(df_change, percent_timeframe, st)
+##################################################
 
+##################################################
+# Percent price change plot
+##################################################
 st.subheader("Current Price of Cryptocurrencies - Top " + str(num_coin))
 price_plot(df_coins, st)
+##################################################
 
 
-# Display the dataframe
+##################################################
+# Crypto data
+##################################################
 st.subheader("Price Data of Cryptocurrencies")
 st.download_button(
     label="Download data as CSV",
@@ -111,5 +119,5 @@ st.write(
     + " columns."
 )
 st.write("(Click on the column names to sort data)")
-
 st.dataframe(df_coins)
+##################################################
