@@ -21,7 +21,8 @@ st.set_page_config(layout="wide")
 st.title("Crypto Price Monitor and Analysis")
 st.markdown(
     """
-    The crypto-currency data is retrieved in **real-time** from [CoinMarketCap](http://coinmarketcap.com) for the analysis.
+    The crypto-currency data is retrieved in **real-time** from [CoinMarketCap](http://coinmarketcap.com). Access the source code on
+    [GitHub](https://github.com/sanjayg96/crypto-monitor/tree/master)
 
 """
 )
