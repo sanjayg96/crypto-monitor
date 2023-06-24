@@ -1,5 +1,7 @@
 # Cryptocurreny Price Monitoring and Analysis
 
+[Click here](https://crypto-monitor-15222llmaji.streamlit.app/) to access the deployed web app.
+
 ## About
 This is a web app made to get quick insights about the cryptocurrencies in real-time. The data for the analysis is retrived from [CoinMarketCap](http://coinmarketcap.com).
 
