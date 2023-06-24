@@ -12,5 +12,5 @@ Purpose | Tools/Libraries
 ---|---
 Web scraping and API calls | Beautiful Soup, Requests
 Data handling and analysis | Pandas, JSON
-Interactive visualizations | Plotly
-Web design and deployment | Streamlit
+Interactive data visualizations | Plotly
+Web app design and deployment | Streamlit
