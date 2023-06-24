@@ -1,0 +1,38 @@
+{
+    "select_columns": [
+        "name",
+        "symbol",
+        "quote.USD.price",
+        "quote.USD.marketCap",
+        "quote.USD.percentChange1h",
+        "quote.USD.percentChange24h",
+        "quote.USD.percentChange7d",
+        "quote.USD.percentChange30d",
+        "quote.USD.percentChange60d",
+        "quote.USD.percentChange90d",
+        "quote.USD.ytdPriceChangePercentage",
+        "quote.USD.volume24h"
+    ],
+    "new_col_names": [
+        "Cryptocurrency",
+        "Symbol",
+        "Price",
+        "Market Cap",
+        "PercentChange1h",
+        "PercentChange24h",
+        "PercentChange7d",
+        "PercentChange30d",
+        "PercentChange60d",
+        "PercentChange90d",
+        "YTDPricePercentChange",
+        "Volume24h"
+    ],
+    "period_column_mapping": {
+        "1h": "PercentChange1h",
+        "24h": "PercentChange24h",
+        "7d": "PercentChange7d",
+        "30d": "PercentChange30d",
+        "60d": "PercentChange60d",
+        "90d": "PercentChange90d"
+    }
+}
